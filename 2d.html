@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2-Digit Number Table</title>
+<style>
+    body {
+        background-color:greenyellow;
+        font-family: Arial, sans-serif;
+        text-align: center;
+    }
+    .pho{
+              margin-top: -20px;
+
+      background-image: url(shwe.jpg);
+      background-size: 100% 100%;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+    th, td {
+        border: 1px solid black;
+        padding: 5px;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+    td {
+        cursor: pointer;
+    }
+    #balance {
+              color: whitesmoke;
+
+        margin-left: -70%;
+        font-size: 15px;
+        margin-bottom: 20px;
+    }
+    #history1 {
+        
+        margin-top: 20px;
+        text-align: left;
+    }
+    #number-display {
+        color: red;
+  font-size: 48px;
+  font-weight: bold;
+  text-align: center;
+  margin-top: -50px;
+}
+
+#saved-history-container {
+  margin-top: 20px;
+  text-align: center;
+}
+
+#saved-history {
+  font-size: 24px;
+}
+
+#history-list {
+  font-size: 18px;
+  margin-top: 20px;
+}
+  h4{
+        color: white;
+
+    padding-top: 20px;
+    margin-right: 70%;
+    font-size: 20px;
+}
+</style>
+</head>
+<body>
+    <div class="pho">
+<h1>ShweNyar 2D</h1>
+  <h4>player 1</h4>
+
+<div id="balance">Balance: $<span id="balanceAmount">0</span></div>
+<div id="number-display">0</div>
+        </div>
+
+<table>
+    
+    <tbody id="numberTableBody"></tbody>
+</table>
+<div id="history1">
+    <h2>Your History</h2>
+    <ul id="historyList1"></ul>
+
+</div>
+<div id="saved-history-container">
+    <div id="saved-history">Today Lucky number:</div>
+    <div id="history-list"></div>
+  </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+    var numberDisplay = document.getElementById("number-display");
+    var historyList = document.getElementById("history-list");
+    
+    var stopTimes = [{hour: 12, minute: 0}, {hour: 4, minute: 0}];
+    var history = JSON.parse(localStorage.getItem("history")) || [];
+  
+    // Function to update the displayed number every 6 seconds
+    function updateNumber() {
+      var currentTime = new Date();
+      var currentHour = currentTime.getHours();
+      var currentMinute = currentTime.getMinutes();
+      var currentSecond = currentTime.getSeconds();
+      
+      // Check if the current time matches any of the stop times
+      for (var i = 0; i < stopTimes.length; i++) {
+        if (currentHour === stopTimes[i].hour && currentMinute === stopTimes[i].minute && currentSecond === 0) {
+          saveNumber(); // Automatically save the stopped number
+          return;
+        }
+      }
+  
+      // Generate a random number between 0 and 99
+      var randomNumber = Math.floor(Math.random() * 100);
+      // Format the number with leading zeros
+      var formattedNumber = randomNumber.toString().padStart(2, "0");
+      // Update the displayed number
+      numberDisplay.textContent = formattedNumber;
+    }
+  
+    // Function to save the current number and time
+    function saveNumber() {
+      var currentTime = new Date();
+      var savedTime = currentTime.toLocaleTimeString();
+      var currentNumber = numberDisplay.textContent;
+      history.push({ number: currentNumber, time: savedTime });
+      if (history.length > 2) {
+        history.shift(); // Remove the oldest entry if there are more than 2
+      }
+      localStorage.setItem("history", JSON.stringify(history));
+      displayHistory(); // Display the updated history
+    }
+  
+    // Function to display the saved history
+    function displayHistory() {
+      historyList.innerHTML = ""; // Clear the previous history
+      for (var i = 0; i < history.length; i++) {
+        var entry = document.createElement("div");
+        entry.textContent = "Number: " + history[i].number + ", Time: " + history[i].time;
+        historyList.appendChild(entry);
+      }
+    }
+  
+    // Display initial history on page load
+    displayHistory();
+  
+    // Start the live number update
+    setInterval(updateNumber, 1000); // Update number every 6 seconds
+  });
+
+
+    let balance = parseInt(localStorage.getItem('balance')) || 0;
+    let transactionHistory = JSON.parse(localStorage.getItem('transactionHistory')) || [];
+
+    function updateBalance() {
+        document.getElementById('balanceAmount').textContent = balance;
+    }
+
+    function updateTransactionHistory() {
+        const historyList = document.getElementById('historyList1');
+        historyList.innerHTML = '';
+        transactionHistory.forEach(transaction => {
+            const listItem = document.createElement('li');
+            listItem.textContent = `Number: ${transaction.number}, Money: ${transaction.money}, Time: ${transaction.timestamp}`;
+            historyList1.appendChild(listItem);
+        });
+    }
+
+    function saveDataToHistory(number, money) {
+        const timestamp = new Date().toLocaleString();
+        transactionHistory.push({ number: number, money: money, timestamp: timestamp });
+        localStorage.setItem('transactionHistory', JSON.stringify(transactionHistory));
+    }
+
+    function handleClick(number) {
+        const money = parseInt(prompt(`Choose money for number ${number}:`));
+        if (!isNaN(money)) {
+            if (money > balance) {
+                alert("Balance not enough!");
+            } else {
+                balance -= money;
+                updateBalance();
+                saveDataToHistory(number, money);
+                updateTransactionHistory();
+                localStorage.setItem('balance', balance);
+            }
+        }
+    }
+
+    function generateTwoDigitTable() {
+        const numberTableBody = document.getElementById('numberTableBody');
+        for (let i = 0; i < 10; i++) {
+            const row = document.createElement('tr');
+            for (let j = 0; j < 10; j++) {
+                const number = (i * 10 + j).toString().padStart(2, '0');
+                const cell = document.createElement('td');
+                const link = document.createElement('a');
+                link.href = '#';
+                link.textContent = number;
+                link.addEventListener('click', () => handleClick(number));
+                cell.appendChild(link);
+                row.appendChild(cell);
+            }
+            numberTableBody.appendChild(row);
+        }
+    }
+
+    // Generate the number table
+    generateTwoDigitTable();
+
+    // Display initial balance and transaction history
+    updateBalance();
+    
+    updateTransactionHistory();
+    
+   // Initial update
+    updateNumber();
+    updateHistoryList();
+    startInterval(); // Start the interval for updating the number
+
+    // Schedule automatic deletion of transaction history after 1 hour
+    setTimeout(clearHistory, 100000); // 1 hour in milliseconds (3600000)
+
+</script>
+</body>
+</html>
