@@ -21,7 +21,7 @@
   <button onclick="spin()">Spin</button>
 </div>
 <div class="bet">
-  <p>🍓 *1000</p>
+  <p>🍓 *100</p>
   <p>🍇 *30</p>
   <p>🍉 *20</p>
   <p>🍒 *10</p>
@@ -75,7 +75,7 @@ function spin() {
       win = true;
       switch (result1) {
         case '🍓':
-          const winningsStrawberry = betAmount * 1000;
+          const winningsStrawberry = betAmount * 100;
           balance += winningsStrawberry;
           updateBalance();
           alert(`Congratulations! You won ${winningsStrawberry} credits!`);
