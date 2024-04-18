@@ -68,72 +68,42 @@
             balance = parseFloat(balance);
         }
 
-        // Retrieve saved money from local storage or set default value
-        let savedMoney = localStorage.getItem('Money');
-        if (savedMoney === null) {
-            savedMoney = 0;
-            localStorage.setItem('savedMoney', savedMoney);
-        } else {
-            savedMoney = parseFloat(savedMoney);
+        // Retrieve saved time from local storage or set default value
+        let savedTime = localStorage.getItem('savedTime');
+        if (savedTime === null) {
+            savedTime = "";
         }
 
-        // Retrieve last saved timestamp from local storage or set default value
-        let lastSavedTime = localStorage.getItem('lastSavedTime');
-        if (lastSavedTime === null) {
-            lastSavedTime = new Date(Data).getTime();
-            localStorage.setItem('lastSavedTime', lastSavedTime);
-        } else {
-            lastSavedTime = parseInt(lastSavedTime);
-        }
-
-        return { balance, savedMoney, lastSavedTime };
+        return { balance, savedTime };
     }
 
     // Function to update balance display
-    function updateBalanceDisplay(balance, savedMoney, savedDays, savedTimes) {
+    function updateBalanceDisplay(balance, savedTime) {
         document.getElementById('balanceDisplay').innerHTML = `
             <p>Current Balance: $${balance.toFixed(2)}</p>
-            <p>Saved Money: $${savedMoney.toFixed(2)}</p>
-            <p>Saved for ${calculateDaysSaved()} days</p>
-            <p>Saved ${calculateTimesSaved()} times</p>
+            <p>Last Saved Time: ${savedTime}</p>
         `;
     }
 
     // Function to withdraw money
     function withdraw() {
         const withdrawAmount = parseFloat(document.getElementById('withdrawAmount').value);
-        let { balance, savedMoney, lastSavedTime } = initialize();
+        let { balance } = initialize();
         if (withdrawAmount > 0 && withdrawAmount <= balance) {
             balance -= withdrawAmount;
-            savedMoney += withdrawAmount;
             localStorage.setItem('balance', balance);
-            localStorage.setItem('savedMoney', savedMoney);
-            localStorage.setItem('lastSavedTime', new Date().getTime());
-            updateBalanceDisplay(balance, savedMoney);
+            const currentTime = new Date().toLocaleString();
+            localStorage.setItem('savedTime', currentTime);
+            updateBalanceDisplay(balance, currentTime);
         } else {
             alert('Invalid amount or insufficient balance!');
         }
     }
 
-    // Function to calculate the number of days money has been saved
-    function calculateDaysSaved() {
-        const currentTime = new Date().getTime();
-        const lastSavedTime = parseInt(localStorage.getItem('lastSavedTime'));
-        const diffTime = currentTime - lastSavedTime;
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        return diffDays;
-    }
-
-    // Function to calculate the number of times money has been saved
-    function calculateTimesSaved() {
-        const savedTimes = parseInt(localStorage.getItem('savedTimes'));
-        return savedTimes + 1;
-    }
-
     // Initial setup
     window.onload = function() {
-        const { balance, savedMoney } = initialize();
-        updateBalanceDisplay(balance, savedMoney);
+        const { balance, savedTime } = initialize();
+        updateBalanceDisplay(balance, savedTime);
     };
 </script>
 
