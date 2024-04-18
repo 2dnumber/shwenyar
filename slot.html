@@ -14,10 +14,21 @@
     <div class="balance">Balance: <span id="balance"></span></div>
     <label for="addBalance"hidden>Add Balance:</label>
     <input type="number" id="addBalance" min="1"hidden>
-    <button onclick="addBalance()"hidden>Add</button>
-    <label for="betAmount">Bet Amount:</label>
-    <input type="number" id="betAmount" min="1" value="1">
-    <button onclick="spin()">Spin</button>
+   <div class="amount">
+    <input type="number" id="betAmount"   placeholder="betAmount"> 
+  </div>   
+<div class="spin">
+  <button onclick="spin()">Spin</button>
+</div>
+<div class="bet">
+  <p>🍓 *1000</p>
+  <p>🍇 *30</p>
+  <p>🍉 *20</p>
+  <p>🍒 *10</p>
+  <p>🍋 *10</p>
+  <p>🍊 *10</p>
+ 
+</div>
     <div class="history">History:</div>
 
   <script>
@@ -101,7 +112,7 @@ function spin() {
 
 function getRandomSymbol() {
   const randomNum = Math.random();
-  if (randomNum < 0.9) {
+  if (randomNum < 0.7) {
     return symbols[Math.floor(Math.random() * (symbols.length - 1))];
   } else {
     return symbols[Math.floor(Math.random() * symbols.length)];
@@ -116,12 +127,16 @@ function updateBalance() {
   </script>
 </body>
 <style>
+  body{
+    background-color:bisque;
+  }
   .slot-machine {
     font-size: 50px;
   text-align: center;
 }
 
 .reel {
+  background-color:wheat;
   display: inline-block;
   width: 100px;
   height: 100px;
@@ -129,14 +144,28 @@ function updateBalance() {
   margin: 10px;
   vertical-align: top;
 }
+#betAmount{
+align-items: center;
+justify-content: center;
+display: grid;}
 
 button {
-  margin-top: 20px;
+  font-size: 30px;
+  background-color: aqua;
+  align-items: center;
+  justify-content: center;
+  display: grid;
 }
 
 .history {
   margin-top: 20px;
   text-align: left;
+}
+.amount{
+  margin-top: 20px;
+  align-items: center;
+  justify-content: center;
+  display: grid;
 }
 .balance{
 
@@ -144,6 +173,15 @@ button {
   align-items: center;
   justify-content: center;
   display: grid;
+}
+.spin{
+  margin-top: 40px;
+  align-items: center;
+  justify-content: center;
+  display: grid;
+}
+p{
+  margin-top: 20px;
 }
 
 </style>
